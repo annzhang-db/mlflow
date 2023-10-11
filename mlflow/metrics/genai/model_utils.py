@@ -18,7 +18,10 @@ def score_model_on_payload(model_uri, payload):
     prefix, suffix = _parse_model_uri(model_uri)
 
     if prefix == "openai":
-        return _call_openai_api(suffix, payload)
+        try:
+            return _call_openai_api(suffix, payload)
+        except:
+            raise MlflowException("openai error")
     elif prefix == "gateway":
         return _call_gateway_api(suffix, payload)
     elif prefix in ("model", "runs"):
