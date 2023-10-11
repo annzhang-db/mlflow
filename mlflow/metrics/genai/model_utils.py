@@ -20,8 +20,8 @@ def score_model_on_payload(model_uri, payload):
     if prefix == "openai":
         try:
             return _call_openai_api(suffix, payload)
-        except:
-            raise MlflowException("openai error")
+        except Exception as e:
+            raise MlflowException(f"Open AI failed. Error: {e!r}")
     elif prefix == "gateway":
         return _call_gateway_api(suffix, payload)
     elif prefix in ("model", "runs"):
@@ -57,27 +57,30 @@ def _call_openai_api(openai_uri, payload):
             error_code=INVALID_PARAMETER_VALUE,
         )
 
-    route_config = RouteConfig(
-        name="openai",
-        route_type=ROUTE_TYPE,
-        model={
-            "name": openai_uri,
-            "provider": "openai",
-            "config": {"openai_api_key": os.environ["OPENAI_API_KEY"]},
-        },
-    )
-    openai_provider = OpenAIProvider(route_config)
+    try:
+        route_config = RouteConfig(
+            name="openai",
+            route_type=ROUTE_TYPE,
+            model={
+                "name": openai_uri,
+                "provider": "openai",
+                "config": {"openai_api_key": os.environ["OPENAI_API_KEY"]},
+            },
+        )
+        openai_provider = OpenAIProvider(route_config)
 
-    payload = openai_provider._prepare_completion_request_payload(payload)
+        payload = openai_provider._prepare_completion_request_payload(payload)
 
-    # use python requests instead of aiohttp
-    resp = requests.post(
-        url=append_to_uri_path(openai_provider._request_base_url, "chat/completions"),
-        headers=openai_provider._request_headers,
-        json=openai_provider._add_model_to_payload_if_necessary(payload),
-    ).json()
+        # use python requests instead of aiohttp
+        resp = requests.post(
+            url=append_to_uri_path(openai_provider._request_base_url, "chat/completions"),
+            headers=openai_provider._request_headers,
+            json=openai_provider._add_model_to_payload_if_necessary(payload),
+        ).json()
 
-    return json.loads(openai_provider._prepare_completion_response_payload(resp).json())
+        return json.loads(openai_provider._prepare_completion_response_payload(resp).json())
+    except Exception as e:
+        raise MlflowException(f"Open AI failed (inner). Error: {e!r}")
 
 
 def _call_gateway_api(gateway_uri, payload):
