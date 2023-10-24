@@ -224,8 +224,12 @@ def make_genai_metric(
 
         eval_values = dict(zip(grading_context_columns, args))
 
-        outputs = predictions.to_list()
-        inputs = inputs.to_list()
+        try:
+            outputs = predictions.to_list()
+            inputs = inputs.to_list()
+        except:
+            outputs = list(predictions)
+            inputs = list(predictions)
         eval_model = evaluation_context["model"]
         eval_parameters = evaluation_context["parameters"]
 
