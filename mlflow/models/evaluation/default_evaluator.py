@@ -1502,6 +1502,9 @@ class DefaultEvaluator(ModelEvaluator):
 
         if len(exceptions) > 0:
             raise MlflowException("\n".join(exceptions))
+        
+        self.metrics = {}
+        self.metric_values = {}
 
     def _evaluate_metrics(self, eval_df):
         self._check_args(self.builtin_metrics + self.extra_metrics, eval_df)
