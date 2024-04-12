@@ -526,6 +526,8 @@ def _extract_output_and_other_columns(model_predictions, output_column_name):
                 "output column name using the `predictions` parameter.",
                 error_code=INVALID_PARAMETER_VALUE,
             )
+    elif isinstance(model_predictions, pd.Series):
+        y_pred = pd.Series(model_predictions, name=output_column_name)
 
     return (
         y_pred if y_pred is not None else model_predictions,
