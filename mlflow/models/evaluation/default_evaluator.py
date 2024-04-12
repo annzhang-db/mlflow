@@ -1393,7 +1393,6 @@ class DefaultEvaluator(ModelEvaluator):
             elif isinstance(sample_pred, list):
                 return sum(y_pred_list, [])
             elif isinstance(sample_pred, pd.Series):
-                _logger.warning("return from pd series")
                 return pd.concat(y_pred_list, ignore_index=True)
             else:
                 raise MlflowException(
@@ -1407,9 +1406,9 @@ class DefaultEvaluator(ModelEvaluator):
             _logger.info("Computing model predictions.")
 
             if compute_latency:
-                model_predictions_1 = predict_with_latency(X_copy)
-                model_predictions = self.model.predict(X_copy)
-                _logger.info(model_predictions_1)
+                model_predictions = predict_with_latency(X_copy)
+                # model_predictions = self.model.predict(X_copy)
+                # _logger.info(model_predictions_1)
                 _logger.info("-----------------")
                 _logger.info(model_predictions)
             else:
