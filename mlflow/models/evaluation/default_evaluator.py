@@ -588,8 +588,8 @@ def _evaluate_metric(metric_tuple, eval_fn_args):
         MetricValue
     """
     _logger.warning(f"eval_fn_args")
-    for key, value in eval_fn_args.items():
-        _logger.warning(f"{key}: {value} (type: {type(value)})")
+    for value in eval_fn_args:
+        _logger.warning(f"{value} (type: {type(value)})")
     if metric_tuple.index < 0:
         exception_header = f"Did not log builtin metric '{metric_tuple.name}' because it"
     else:
