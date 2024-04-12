@@ -158,6 +158,8 @@ def _rouge1_eval_fn(predictions, targets=None, metrics=None):
     if not _validate_text_data(targets, "rouge1", targets_col_specifier) or not _validate_text_data(
         predictions, "rouge1", predictions_col_specifier
     ):
+        if targets == None:
+            _logger.warning(f"No targets provided for 'rouge1' metric, skipping metric logging.")
         return
 
     try:
