@@ -148,7 +148,6 @@ def trace(
 
         def __init__(self, fn, args, kwargs):
             self.coro = self._wrapping_logic(fn, args, kwargs)
-            _logger.info(self.coro)
 
         def __enter__(self):
             next(self.coro)
@@ -162,6 +161,7 @@ def trace(
             if exc_type is not None:
                 self.coro.throw(exc_type, exc_value, traceback)
             self.coro.close()
+            _logger.info(self.coro)
 
     def decorator(fn):
         if inspect.iscoroutinefunction(fn):
