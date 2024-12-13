@@ -325,6 +325,7 @@ class LiveSpan(Span):
 
     def set_attribute(self, key: str, value: Any):
         """Set a single attribute to the span."""
+        _logger.info(f"set attribute key {key} value {value}")
         self._attributes.set(key, value)
 
     def set_status(self, status: Union[SpanStatusCode, str]):
@@ -566,9 +567,7 @@ class _SpanAttributesRegistry:
         self._span = otel_span
 
     def get_all(self) -> dict[str, Any]:
-        key_dict = {key: self.get(key) for key in self._span.attributes.keys()}
-        _logger.info(key_dict)
-        return key_dict
+        return {key: self.get(key) for key in self._span.attributes.keys()}
 
     def get(self, key: str):
         serialized_value = self._span.attributes.get(key)
