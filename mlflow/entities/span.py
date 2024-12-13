@@ -57,7 +57,6 @@ def create_mlflow_span(
         return NoOpSpan()
 
     if isinstance(otel_span, OTelSpan):
-        _logger.info("hi im here")
         return LiveSpan(otel_span, request_id, span_type)
 
     if isinstance(otel_span, OTelReadableSpan):
