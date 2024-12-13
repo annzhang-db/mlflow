@@ -144,6 +144,7 @@ def trace(
                     _logger.warning(f"Failed to capture inputs for function {fn.__name__}.")
                 result = yield  # sync/async function output to be sent here
                 span.set_outputs(result)
+                _logger.info("span: " + span)
                 yield result
 
         def __init__(self, fn, args, kwargs):
