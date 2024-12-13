@@ -566,7 +566,9 @@ class _SpanAttributesRegistry:
         self._span = otel_span
 
     def get_all(self) -> dict[str, Any]:
-        return {key: self.get(key) for key in self._span.attributes.keys()}
+        key_dict = {key: self.get(key) for key in self._span.attributes.keys()}
+        _logger.info(key_dict)
+        return key_dict
 
     def get(self, key: str):
         serialized_value = self._span.attributes.get(key)
