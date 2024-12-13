@@ -298,7 +298,7 @@ class LiveSpan(Span):
         self._span = otel_span
         self._attributes = _SpanAttributesRegistry(otel_span)
         self._attributes.set(SpanAttributeKey.REQUEST_ID, request_id)
-        self._attributes.set(SpanAttributeKey.SPAN_TYPE, span_type)
+        self._attributes.set(SpanAttributeKey.SPAN_TYPE, SpanType.RETRIEVER)
 
     def set_inputs(self, inputs: Any):
         """Set the input values to the span."""
