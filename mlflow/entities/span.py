@@ -401,6 +401,7 @@ class LiveSpan(Span):
             self.set_status(SpanStatus(SpanStatusCode.OK))
 
         self._span.end(end_time=end_time)
+        _logger.info(f"span {self._span}")
 
     def from_dict(cls, data: dict[str, Any]) -> "Span":
         raise NotImplementedError("The `from_dict` method is not supported for the LiveSpan class.")
