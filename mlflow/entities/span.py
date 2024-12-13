@@ -270,7 +270,7 @@ def is_valid_retriever_outputs(outputs: Any) -> bool:
         return False
     
     def is_valid_retriever_output(output: Any) -> bool:
-        if isinstance(mlflow.entities.Document):
+        if isinstance(output, mlflow.entities.Document):
             return True
         
         if isinstance(output, dict):
@@ -327,6 +327,7 @@ class LiveSpan(Span):
         """Set the output values to the span."""
         self.set_attribute(SpanAttributeKey.OUTPUTS, outputs)
         if is_valid_retriever_outputs(outputs):
+            _logger.info("setting retriever span type")
             self.set_attribute(SpanAttributeKey.SPAN_TYPE, SpanType.RETRIEVER)        
 
     def set_attributes(self, attributes: dict[str, Any]):
