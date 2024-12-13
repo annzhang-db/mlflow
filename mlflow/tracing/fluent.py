@@ -247,6 +247,7 @@ def start_span(
     Returns:
         Yields an :py:class:`mlflow.entities.Span` that represents the created span.
     """
+    _logger.info(f"starting span name={name} span_type={span_type} attributes={attributes}")
     try:
         otel_span = provider.start_span_in_context(name)
 
