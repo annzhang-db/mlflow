@@ -265,6 +265,25 @@ class Span:
             ) from e
 
 
+def is_valid_retriever_outputs(outputs: Any) -> bool:
+    if not isinstance(outputs, list):
+        return False
+    
+    def is_valid_retriever_output(output: Any) -> bool:
+        if isinstance(mlflow.entities.Document):
+            return True
+        
+        if isinstance(output, dict):
+            allowed_keys = {"id", "page_content", "metadata"}
+            return (
+                set(output.keys()).issubset(allowed_keys) and
+                "page_content" in output and isinstance(output["page_content"], str) and
+                (output.get("id", None) is None or isinstance(output.get("id", None), str)) and
+                (output.get("metadata", None) is None or (isinstance(output.get("metadata", None), dict) and all(isinstance(key, str) for key in output.get("metadata").keys())))
+            )
+
+    return all(is_valid_retriever_output(output) for output in outputs)
+
 class LiveSpan(Span):
     """
     A "live" version of the :py:class:`Span <mlflow.entities.Span>` class.
@@ -298,7 +317,7 @@ class LiveSpan(Span):
         self._span = otel_span
         self._attributes = _SpanAttributesRegistry(otel_span)
         self._attributes.set(SpanAttributeKey.REQUEST_ID, request_id)
-        self._attributes.set(SpanAttributeKey.SPAN_TYPE, SpanType.RETRIEVER)
+        self._attributes.set(SpanAttributeKey.SPAN_TYPE, span_type)
 
     def set_inputs(self, inputs: Any):
         """Set the input values to the span."""
@@ -307,6 +326,8 @@ class LiveSpan(Span):
     def set_outputs(self, outputs: Any):
         """Set the output values to the span."""
         self.set_attribute(SpanAttributeKey.OUTPUTS, outputs)
+        if is_valid_retriever_outputs(outputs):
+            self.set_attribute(SpanAttributeKey.SPAN_TYPE, SpanType.RETRIEVER)        
 
     def set_attributes(self, attributes: dict[str, Any]):
         """
